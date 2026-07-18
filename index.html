@@ -1,0 +1,562 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  .lp-root {
+    --bg: #F3F4F7;
+    --surface: #FFFFFF;
+    --ink: #12141C;
+    --ink-soft: #5B5F6B;
+    --ink-faint: #9498A3;
+    --border: #E3E5EA;
+    --accent: #2952FF;
+    --accent-soft: #EDF0FF;
+    --amber: #C77D19;
+    --amber-soft: #FBF1E1;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding: 48px 20px 64px;
+    min-height: 100%;
+    box-sizing: border-box;
+  }
+  .lp-root *, .lp-root *::before, .lp-root *::after { box-sizing: border-box; }
+  .lp-mono { font-family: 'JetBrains Mono', monospace; }
+
+  .lp-wrap { max-width: 640px; margin: 0 auto; }
+
+  .lp-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .lp-eyebrow::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .lp-h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+  }
+  .lp-h1 span { color: var(--accent); }
+
+  .lp-sub {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin: 0 0 28px;
+    max-width: 46ch;
+  }
+
+  .lp-form {
+    display: flex;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 1px 2px rgba(18,20,28,0.04);
+  }
+  .lp-form input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    padding: 12px 12px;
+    color: var(--ink);
+    min-width: 0;
+  }
+  .lp-form input::placeholder { color: var(--ink-faint); }
+  .lp-form button {
+    border: none;
+    background: var(--ink);
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+    flex-shrink: 0;
+  }
+  .lp-form button:hover { background: var(--accent); }
+  .lp-form button:active { transform: scale(0.97); }
+  .lp-form button:focus-visible, .lp-form input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .lp-form button:disabled { background: var(--ink-faint); cursor: default; }
+
+  .lp-status {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    min-height: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lp-status.err { color: #B23A3A; }
+  .lp-spin {
+    width: 12px; height: 12px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: lp-spin 0.7s linear infinite;
+  }
+  @keyframes lp-spin { to { transform: rotate(360deg); } }
+
+  .lp-results { margin-top: 36px; display: none; }
+  .lp-results.show { display: block; }
+
+  .lp-tabs {
+    display: flex;
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  .lp-tab {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding: 10px 4px 12px;
+    margin-right: 18px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+  .lp-tab:hover { color: var(--ink); }
+  .lp-tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+  .lp-tab-badge {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .lp-panel { display: none; }
+  .lp-panel.active { display: block; animation: lp-fade 0.25s ease; }
+  @keyframes lp-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ---- Google SERP mock ---- */
+  .lp-google {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .lp-g-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .lp-g-favicon {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--border); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .lp-g-favicon img { width: 100%; height: 100%; object-fit: cover; }
+  .lp-g-site { font-size: 14px; color: #202124; font-weight: 400; }
+  .lp-g-url { font-size: 12px; color: #4d5156; margin-left: 32px; margin-top: -2px; margin-bottom: 6px; }
+  .lp-g-title { font-size: 20px; color: #1a0dab; line-height: 1.3; margin: 4px 0 6px; text-decoration: none; }
+  .lp-g-desc { font-size: 14px; color: #4d5156; line-height: 1.55; max-width: 560px; }
+
+  /* ---- Facebook mock ---- */
+  .lp-fb {
+    border: 1px solid #dadde1;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--surface);
+    max-width: 500px;
+  }
+  .lp-fb-img { width: 100%; aspect-ratio: 1.91/1; background: #e9eaed; object-fit: cover; display: block; }
+  .lp-fb-body { padding: 10px 12px 14px; background: #f2f3f5; }
+  .lp-fb-domain { font-size: 11px; color: #65676b; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 3px; }
+  .lp-fb-title { font-size: 16px; font-weight: 600; color: #050505; line-height: 1.3; margin-bottom: 3px; }
+  .lp-fb-desc { font-size: 13px; color: #65676b; line-height: 1.35; }
+
+  /* ---- X mock ---- */
+  .lp-x {
+    border: 1px solid #cfd9de;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--surface);
+    max-width: 500px;
+  }
+  .lp-x-img { width: 100%; aspect-ratio: 1.91/1; background: #e9eaed; object-fit: cover; display: block; }
+  .lp-x-body { padding: 10px 12px 12px; border-top: 1px solid #cfd9de; }
+  .lp-x-domain { font-size: 13px; color: #536471; margin-bottom: 2px; }
+  .lp-x-title { font-size: 15px; font-weight: 500; color: #0f1419; line-height: 1.3; margin-bottom: 2px; }
+  .lp-x-desc { font-size: 13px; color: #536471; line-height: 1.3; }
+
+  /* ---- LinkedIn mock ---- */
+  .lp-li {
+    border: 1px solid #e6e9ec;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--surface);
+    max-width: 500px;
+  }
+  .lp-li-img { width: 100%; aspect-ratio: 1.91/1; background: #e9eaed; object-fit: cover; display: block; }
+  .lp-li-body { padding: 10px 14px 12px; background: #f4f2ee; }
+  .lp-li-title { font-size: 14px; font-weight: 600; color: #000; line-height: 1.3; margin-bottom: 4px; }
+  .lp-li-domain { font-size: 12px; color: #00000099; }
+
+  /* ---- Tags panel ---- */
+  .lp-tags { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .lp-tag-row {
+    display: grid;
+    grid-template-columns: 148px 1fr;
+    gap: 16px;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .lp-tag-row:last-child { border-bottom: none; }
+  .lp-tag-key { font-size: 12px; color: var(--ink-soft); padding-top: 1px; }
+  .lp-tag-val { font-size: 13px; color: var(--ink); line-height: 1.5; word-break: break-word; }
+  .lp-tag-val.missing { color: var(--amber); display: flex; align-items: center; gap: 6px; }
+  .lp-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
+
+  .lp-placeholder-img {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #eef0f4, #e3e6ec);
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+
+  .lp-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-faint);
+    font-size: 13px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lp-panel.active { animation: none; }
+    .lp-spin { animation: none; }
+  }
+
+  @media (max-width: 480px) {
+    .lp-h1 { font-size: 26px; }
+    .lp-form { flex-direction: column; }
+    .lp-form button { padding: 12px; }
+    .lp-tag-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>
+
+<div class="lp-root">
+  <div class="lp-wrap">
+    <div class="lp-eyebrow">link inspector</div>
+    <h1 class="lp-h1">See how a link looks<br/>everywhere it's <span>shared</span>.</h1>
+    <p class="lp-sub">Paste a URL to preview its Google result, social cards, and every meta tag behind them.</p>
+
+    <form class="lp-form" id="lpForm">
+      <input type="text" id="lpInput" class="lp-mono" placeholder="https://stripe.com" autocomplete="off" />
+      <button type="submit" id="lpBtn">Inspect</button>
+    </form>
+    <div class="lp-status" id="lpStatus"></div>
+
+    <div class="lp-results" id="lpResults">
+      <div class="lp-tabs" id="lpTabs">
+        <button class="lp-tab active" data-tab="google"><span class="lp-tab-badge" style="background:#4285F4;">G</span>Google</button>
+        <button class="lp-tab" data-tab="x"><span class="lp-tab-badge" style="background:#0F1419;">𝕏</span>X</button>
+        <button class="lp-tab" data-tab="fb"><span class="lp-tab-badge" style="background:#1877F2;">f</span>Facebook</button>
+        <button class="lp-tab" data-tab="li"><span class="lp-tab-badge" style="background:#0A66C2;">in</span>LinkedIn</button>
+        <button class="lp-tab" data-tab="tags"><span class="lp-tab-badge" style="background:#5B5F6B;">#</span>Tags</button>
+      </div>
+
+      <div class="lp-panel active" id="panel-google">
+        <div class="lp-google">
+          <div class="lp-g-row">
+            <div class="lp-g-favicon" id="gFavicon"></div>
+            <div>
+              <div class="lp-g-site" id="gSite"></div>
+            </div>
+          </div>
+          <div class="lp-g-url" id="gUrl"></div>
+          <a class="lp-g-title" id="gTitle" href="#" onclick="return false;"></a>
+          <div class="lp-g-desc" id="gDesc"></div>
+        </div>
+      </div>
+
+      <div class="lp-panel" id="panel-x">
+        <div class="lp-x">
+          <div id="xImgWrap" class="lp-x-img"></div>
+          <div class="lp-x-body">
+            <div class="lp-x-domain" id="xDomain"></div>
+            <div class="lp-x-title" id="xTitle"></div>
+            <div class="lp-x-desc" id="xDesc"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lp-panel" id="panel-fb">
+        <div class="lp-fb">
+          <div id="fbImgWrap" class="lp-fb-img"></div>
+          <div class="lp-fb-body">
+            <div class="lp-fb-domain" id="fbDomain"></div>
+            <div class="lp-fb-title" id="fbTitle"></div>
+            <div class="lp-fb-desc" id="fbDesc"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lp-panel" id="panel-li">
+        <div class="lp-li">
+          <div id="liImgWrap" class="lp-li-img"></div>
+          <div class="lp-li-body">
+            <div class="lp-li-title" id="liTitle"></div>
+            <div class="lp-li-domain" id="liDomain"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lp-panel" id="panel-tags">
+        <div class="lp-tags" id="tagsList"></div>
+      </div>
+    </div>
+
+    <div class="lp-empty" id="lpEmpty">Nothing inspected yet — try a URL above.</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const form = document.getElementById('lpForm');
+  const input = document.getElementById('lpInput');
+  const btn = document.getElementById('lpBtn');
+  const status = document.getElementById('lpStatus');
+  const results = document.getElementById('lpResults');
+  const empty = document.getElementById('lpEmpty');
+  const tabs = document.getElementById('lpTabs');
+
+  tabs.addEventListener('click', (e) => {
+    const t = e.target.closest('.lp-tab');
+    if (!t) return;
+    tabs.querySelectorAll('.lp-tab').forEach(el => el.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelectorAll('.lp-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+  });
+
+  function setStatus(text, isError) {
+    status.textContent = text || '';
+    status.classList.toggle('err', !!isError);
+  }
+
+  function normalizeUrl(raw) {
+    let u = raw.trim();
+    if (!u) return null;
+    if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+    try { return new URL(u); } catch (e) { return null; }
+  }
+
+  function absolutize(maybeUrl, base) {
+    if (!maybeUrl) return null;
+    try { return new URL(maybeUrl, base).href; } catch (e) { return null; }
+  }
+
+  function getMeta(doc, keys) {
+    for (const k of keys) {
+      const el = doc.querySelector(`meta[property="${k}"]`) || doc.querySelector(`meta[name="${k}"]`);
+      if (el && el.getAttribute('content')) return el.getAttribute('content').trim();
+    }
+    return null;
+  }
+
+  function fetchWithTimeout(url, ms) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), ms);
+    return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer));
+  }
+
+  async function fetchWithProxies(targetUrl) {
+    const proxies = [
+      (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+      (u) => `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(u)}`,
+      (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+    ];
+    let lastErr;
+    for (const makeUrl of proxies) {
+      try {
+        const res = await fetchWithTimeout(makeUrl(targetUrl), 12000);
+        if (!res.ok) throw new Error('bad status ' + res.status);
+        const text = await res.text();
+        if (!text || text.length < 40) throw new Error('empty response');
+        return text;
+      } catch (e) {
+        console.error('proxy failed:', makeUrl('...'), e);
+        lastErr = e;
+      }
+    }
+    throw lastErr || new Error('all proxies failed');
+  }
+
+  function fill(id, text) { document.getElementById(id).textContent = text; }
+
+  function fillImage(wrapId, url, fallbackLetter) {
+    const wrap = document.getElementById(wrapId);
+    wrap.innerHTML = '';
+    if (url) {
+      const img = document.createElement('img');
+      img.src = url;
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      img.style.display = 'block';
+      img.onerror = () => { wrap.innerHTML = `<div class="lp-placeholder-img">no og:image found</div>`; };
+      wrap.appendChild(img);
+    } else {
+      wrap.innerHTML = `<div class="lp-placeholder-img">no og:image found</div>`;
+    }
+  }
+
+  function truncate(str, n) {
+    if (!str) return '';
+    return str.length > n ? str.slice(0, n - 1).trim() + '…' : str;
+  }
+
+  function renderTags(rows) {
+    const list = document.getElementById('tagsList');
+    list.innerHTML = '';
+    rows.forEach(([key, val]) => {
+      const row = document.createElement('div');
+      row.className = 'lp-tag-row';
+      const k = document.createElement('div');
+      k.className = 'lp-tag-key lp-mono';
+      k.textContent = key;
+      const v = document.createElement('div');
+      if (val) {
+        v.className = 'lp-tag-val';
+        v.textContent = val;
+      } else {
+        v.className = 'lp-tag-val missing';
+        v.innerHTML = `<span class="lp-tag-dot"></span>not set`;
+      }
+      row.appendChild(k);
+      row.appendChild(v);
+      list.appendChild(row);
+    });
+  }
+
+  async function inspect(rawUrl) {
+    const parsed = normalizeUrl(rawUrl);
+    if (!parsed) {
+      setStatus('That doesn\'t look like a valid URL.', true);
+      return;
+    }
+
+    btn.disabled = true;
+    results.classList.remove('show');
+    empty.style.display = 'none';
+    setStatus('Fetching page…');
+    status.innerHTML = '<span class="lp-spin"></span> Fetching page…';
+
+    try {
+      const html = await fetchWithProxies(parsed.href);
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+
+      const ogTitle = getMeta(doc, ['og:title']);
+      const rawTitle = doc.querySelector('title')?.textContent?.trim() || null;
+      const title = ogTitle || rawTitle || parsed.hostname;
+
+      const description = getMeta(doc, ['og:description', 'description']);
+      const ogImageRaw = getMeta(doc, ['og:image', 'og:image:url', 'twitter:image']);
+      const image = absolutize(ogImageRaw, parsed.href);
+      const siteName = getMeta(doc, ['og:site_name']) || parsed.hostname.replace(/^www\./, '');
+
+      let faviconHref = doc.querySelector('link[rel~="icon"]')?.getAttribute('href');
+      faviconHref = absolutize(faviconHref, parsed.href) ||
+        `https://www.google.com/s2/favicons?sz=64&domain=${parsed.hostname}`;
+
+      // Google panel
+      fill('gSite', siteName);
+      fill('gUrl', parsed.hostname + (parsed.pathname !== '/' ? parsed.pathname : ''));
+      fill('gTitle', truncate(title, 65));
+      fill('gDesc', truncate(description || 'No meta description found for this page.', 160));
+      document.getElementById('gFavicon').innerHTML = `<img src="${faviconHref}" onerror="this.style.display='none'" />`;
+
+      // X panel
+      fillImage('xImgWrap', image);
+      fill('xDomain', parsed.hostname.replace(/^www\./, ''));
+      fill('xTitle', truncate(title, 70));
+      fill('xDesc', truncate(description || '', 125));
+
+      // Facebook panel
+      fillImage('fbImgWrap', image);
+      fill('fbDomain', parsed.hostname.replace(/^www\./, ''));
+      fill('fbTitle', truncate(title, 80));
+      fill('fbDesc', truncate(description || '', 140));
+
+      // LinkedIn panel
+      fillImage('liImgWrap', image);
+      fill('liTitle', truncate(title, 90));
+      fill('liDomain', parsed.hostname.replace(/^www\./, ''));
+
+      // Tags panel
+      renderTags([
+        ['title', rawTitle],
+        ['meta description', getMeta(doc, ['description'])],
+        ['og:title', ogTitle],
+        ['og:description', getMeta(doc, ['og:description'])],
+        ['og:image', ogImageRaw],
+        ['og:site_name', getMeta(doc, ['og:site_name'])],
+        ['og:type', getMeta(doc, ['og:type'])],
+        ['twitter:card', getMeta(doc, ['twitter:card'])],
+        ['twitter:title', getMeta(doc, ['twitter:title'])],
+        ['twitter:description', getMeta(doc, ['twitter:description'])],
+        ['twitter:image', getMeta(doc, ['twitter:image'])],
+      ]);
+
+      results.classList.add('show');
+      setStatus(`Fetched ${parsed.hostname} successfully.`);
+    } catch (err) {
+      empty.style.display = 'block';
+      empty.textContent = 'Couldn\'t fetch that page — it may block external requests, or be unreachable.';
+      setStatus('Fetch failed. Try a different URL.', true);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    try {
+      inspect(input.value);
+    } catch (err) {
+      console.error(err);
+      btn.disabled = false;
+      setStatus('Something went wrong: ' + err.message, true);
+    }
+  });
+})();
+</script>

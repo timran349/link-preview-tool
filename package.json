@@ -1,0 +1,9 @@
+{
+  "name": "link-preview-inspector",
+  "version": "1.0.0",
+  "description": "See how a link looks everywhere it's shared — Google, X, Facebook, LinkedIn, and raw meta tags.",
+  "private": true,
+  "scripts": {
+    "dev": "npx --yes serve . -l 3000"
+  }
+}
