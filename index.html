@@ -1,5 +1,47 @@
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Link Preview Inspector | Check Open Graph, Twitter Cards, and Social Meta Tags</title>
+  <meta name="description" content="Inspect how any URL appears on Google, X, Facebook, and LinkedIn. Use this free link preview tool to check Open Graph tags, Twitter cards, and meta descriptions." />
+  <meta name="keywords" content="link preview tool, link preview inspector, social media preview, open graph checker, twitter card checker, meta tag inspector, link preview checker" />
+  <meta name="robots" content="index,follow" />
+  <meta name="author" content="Link Preview Inspector" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="canonical" href="https://example.com/" />
+  <meta property="og:title" content="Link Preview Inspector" />
+  <meta property="og:description" content="Inspect how any URL appears on Google, X, Facebook, and LinkedIn with a free link preview tool." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://example.com/" />
+  <meta property="og:image" content="https://example.com/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Link Preview Inspector" />
+  <meta name="twitter:description" content="Inspect how any URL appears on Google, X, Facebook, and LinkedIn with a free link preview tool." />
+  <meta name="twitter:image" content="https://example.com/og-image.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Link Preview Inspector",
+    "url": "https://example.com/",
+    "description": "A free tool for checking how links look on Google, X, Facebook, and LinkedIn using meta tags and social preview data.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500;600;700&display=swap');
+
+  body {
+    margin: 0;
+    background: #ffffff;
+  }
 
   .lp-root {
     --bg: #FFFFFF;
@@ -23,6 +65,26 @@
   .lp-mono { font-family: 'Geist Mono', monospace; }
 
   .lp-wrap { max-width: 640px; margin: 0 auto; }
+
+  .lp-info {
+    margin: 24px 0 0;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+  .lp-info h2 {
+    font-family: 'Geist Mono', monospace;
+    font-size: 16px;
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+  .lp-info p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 0 8px;
+  }
 
   .lp-eyebrow {
     font-family: 'Geist Mono', monospace;
@@ -277,13 +339,20 @@
   }
 </style>
 
-<div class="lp-root">
-  <div class="lp-wrap">
-    <div class="lp-eyebrow">link inspector</div>
-    <h1 class="lp-h1">See how a link looks<br/>everywhere it's <span>shared</span>.</h1>
-    <p class="lp-sub">Paste a URL to preview its Google result, social cards, and every meta tag behind them.</p>
+<body>
+  <div class="lp-root">
+    <div class="lp-wrap">
+      <div class="lp-eyebrow">link inspector</div>
+      <h1 class="lp-h1">Check your <span>link preview</span> everywhere it’s shared.</h1>
+      <p class="lp-sub">Use this free link preview tool to inspect Google results, Open Graph tags, Twitter cards, and social media preview data for any URL.</p>
 
-    <form class="lp-form" id="lpForm">
+      <section class="lp-info" aria-labelledby="seo-heading">
+        <h2 id="seo-heading">Free link preview tool for SEO, social cards, and meta tags</h2>
+        <p>Whether you are launching a new page, checking a blog post, or validating a product link, this link preview inspector helps you verify how your URL will appear when it is shared online.</p>
+        <p>It works as a simple social preview checker, Open Graph checker, Twitter card checker, and meta tag inspector in one place.</p>
+      </section>
+
+      <form class="lp-form" id="lpForm">
       <input type="text" id="lpInput" class="lp-mono" placeholder="https://stripe.com" autocomplete="off" />
       <button type="submit" id="lpBtn">Inspect</button>
     </form>
@@ -349,11 +418,11 @@
       </div>
     </div>
 
-    <div class="lp-empty" id="lpEmpty">Nothing inspected yet — try a URL above.</div>
+      <div class="lp-empty" id="lpEmpty">Nothing inspected yet — try a URL above.</div>
+    </div>
   </div>
-</div>
 
-<script>
+  <script>
 (function() {
   const form = document.getElementById('lpForm');
   const input = document.getElementById('lpInput');
@@ -563,4 +632,6 @@
     }
   });
 })();
-</script>
+  </script>
+</body>
+</html>
