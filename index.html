@@ -4,20 +4,20 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Link Preview Inspector | Check Open Graph, Twitter Cards, and Social Meta Tags</title>
-  <meta name="description" content="Inspect how any URL appears on Google, X, Facebook, and LinkedIn. Use this free link preview tool to check Open Graph tags, Twitter cards, and meta descriptions." />
-  <meta name="keywords" content="link preview tool, link preview inspector, social media preview, open graph checker, twitter card checker, meta tag inspector, link preview checker" />
+  <meta name="description" content="Inspect how any URL appears on Google, X, Facebook, LinkedIn, WhatsApp, and Discord. Free link preview tool for Open Graph tags, Twitter cards, and meta descriptions." />
+  <meta name="keywords" content="link preview tool, link preview inspector, social media preview, open graph checker, twitter card checker, whatsapp preview, discord embed, meta tag inspector" />
   <meta name="robots" content="index,follow" />
   <meta name="author" content="Link Preview Inspector" />
   <meta name="theme-color" content="#ffffff" />
   <link rel="canonical" href="https://example.com/" />
   <meta property="og:title" content="Link Preview Inspector" />
-  <meta property="og:description" content="Inspect how any URL appears on Google, X, Facebook, and LinkedIn with a free link preview tool." />
+  <meta property="og:description" content="Inspect how any URL appears on Google, X, Facebook, LinkedIn, WhatsApp, and Discord with a free link preview tool." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://example.com/" />
   <meta property="og:image" content="https://example.com/og-image.svg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Link Preview Inspector" />
-  <meta name="twitter:description" content="Inspect how any URL appears on Google, X, Facebook, and LinkedIn with a free link preview tool." />
+  <meta name="twitter:description" content="Inspect how any URL appears on Google, X, Facebook, LinkedIn, WhatsApp, and Discord with a free link preview tool." />
   <meta name="twitter:image" content="https://example.com/og-image.svg" />
   <script type="application/ld+json">
   {
@@ -25,23 +25,16 @@
     "@type": "WebApplication",
     "name": "Link Preview Inspector",
     "url": "https://example.com/",
-    "description": "A free tool for checking how links look on Google, X, Facebook, and LinkedIn using meta tags and social preview data.",
+    "description": "A free tool for checking how links look on Google, X, Facebook, LinkedIn, WhatsApp, and Discord using meta tags and social preview data.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Web",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    }
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap');
 
-  body {
-    margin: 0;
-    background: #ffffff;
-  }
+  body { margin: 0; background: #ffffff; }
 
   .lp-root {
     --bg: #FFFFFF;
@@ -53,41 +46,144 @@
     --accent: #111111;
     --accent-soft: #F3F3F3;
     --amber: #444444;
-    --amber-soft: #F6F6F6;
     font-family: 'Geist Mono', monospace;
     background: var(--bg);
     color: var(--ink);
-    padding: 48px 20px 64px;
-    min-height: 100%;
+    padding: 40px 24px 56px;
+    min-height: 100vh;
     box-sizing: border-box;
   }
   .lp-root *, .lp-root *::before, .lp-root *::after { box-sizing: border-box; }
   .lp-mono { font-family: 'Geist Mono', monospace; }
+  .lp-wrap { max-width: 1120px; margin: 0 auto; }
 
-  .lp-wrap { max-width: 640px; margin: 0 auto; }
-
-  .lp-info {
-    margin: 24px 0 0;
-    padding: 18px 20px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--surface);
+  .lp-layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 400px) minmax(0, 1fr);
+    gap: 40px 48px;
+    align-items: start;
   }
-  .lp-info h2 {
+  .lp-left {
+    position: sticky;
+    top: 28px;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 96px);
+  }
+  .lp-right { min-width: 0; min-height: 420px; }
+
+  .lp-about-trigger {
+    margin-top: auto;
+    align-self: flex-start;
+    background: none;
+    border: none;
+    padding: 8px 0;
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-faint);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: transparent;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+  }
+  .lp-about-trigger:hover {
+    color: var(--ink);
+    text-decoration-color: var(--ink);
+  }
+  .lp-about-trigger:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  /* Bottom sheet popup — only covers the lower portion of the viewport */
+  .lp-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    pointer-events: none;
+  }
+  .lp-sheet.open {
+    display: block;
+    pointer-events: auto;
+  }
+  .lp-sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(17, 17, 17, 0.28);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .lp-sheet.open .lp-sheet-backdrop { opacity: 1; }
+  .lp-sheet-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: min(42vh, 340px);
+    background: #fff;
+    border-radius: 16px 16px 0 0;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+    padding: 10px 24px 28px;
+    transform: translateY(100%);
+    transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+    overflow-y: auto;
+  }
+  .lp-sheet.open .lp-sheet-panel { transform: translateY(0); }
+  .lp-sheet-handle {
+    width: 36px;
+    height: 4px;
+    border-radius: 99px;
+    background: var(--border);
+    margin: 4px auto 16px;
+  }
+  .lp-sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .lp-sheet-head h2 {
     font-family: 'Geist Mono', monospace;
     font-size: 16px;
-    margin: 0 0 10px;
+    font-weight: 600;
+    margin: 0;
     color: var(--ink);
   }
-  .lp-info p {
+  .lp-sheet-close {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .lp-sheet-close:hover { background: var(--accent-soft); color: var(--ink); }
+  .lp-sheet-body {
+    max-width: 640px;
+  }
+  .lp-sheet-body p {
     font-size: 14px;
     line-height: 1.6;
     color: var(--ink-soft);
-    margin: 0 0 8px;
+    margin: 0 0 10px;
   }
+  .lp-sheet-body p:last-child { margin-bottom: 0; }
+  body.lp-sheet-open { overflow: hidden; }
 
   .lp-eyebrow {
-    font-family: 'Geist Mono', monospace;
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.14em;
@@ -103,13 +199,11 @@
     width: 6px; height: 6px;
     background: var(--accent);
     border-radius: 50%;
-    display: inline-block;
   }
 
   .lp-h1 {
-    font-family: 'Geist Mono', monospace;
     font-weight: 700;
-    font-size: 34px;
+    font-size: 30px;
     line-height: 1.15;
     letter-spacing: -0.01em;
     margin: 0 0 10px;
@@ -117,11 +211,11 @@
   .lp-h1 span { color: var(--accent); }
 
   .lp-sub {
-    font-size: 15px;
+    font-size: 14px;
     color: var(--ink-soft);
     line-height: 1.5;
-    margin: 0 0 28px;
-    max-width: 46ch;
+    margin: 0 0 22px;
+    max-width: 36ch;
   }
 
   .lp-form {
@@ -131,7 +225,7 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 6px;
-    box-shadow: none;
+    margin-bottom: 12px;
   }
   .lp-form input {
     flex: 1;
@@ -140,7 +234,7 @@
     background: transparent;
     font-family: 'Geist Mono', monospace;
     font-size: 14px;
-    padding: 12px 12px;
+    padding: 12px;
     color: var(--ink);
     min-width: 0;
   }
@@ -152,7 +246,7 @@
     font-family: 'Geist Mono', monospace;
     font-weight: 600;
     font-size: 14px;
-    padding: 0 20px;
+    padding: 0 18px;
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.15s ease, transform 0.15s ease;
@@ -160,14 +254,10 @@
   }
   .lp-form button:hover { background: var(--ink-soft); }
   .lp-form button:active { transform: scale(0.97); }
-  .lp-form button:focus-visible, .lp-form input:focus-visible {
-    outline: none;
-    box-shadow: none;
-  }
   .lp-form button:disabled { background: var(--ink-faint); cursor: default; }
 
   .lp-status {
-    margin-top: 12px;
+    margin-top: 4px;
     font-size: 13px;
     color: var(--ink-soft);
     min-height: 18px;
@@ -182,19 +272,22 @@
     border-top-color: var(--accent);
     border-radius: 50%;
     animation: lp-spin 0.7s linear infinite;
+    flex-shrink: 0;
   }
   @keyframes lp-spin { to { transform: rotate(360deg); } }
 
-  .lp-results { margin-top: 36px; display: none; }
+  .lp-results { display: none; }
   .lp-results.show { display: block; }
 
   .lp-tabs {
     display: flex;
-    gap: 6px;
+    gap: 2px;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     overflow-x: auto;
+    scrollbar-width: none;
   }
+  .lp-tabs::-webkit-scrollbar { display: none; }
   .lp-tab {
     display: flex;
     align-items: center;
@@ -203,10 +296,10 @@
     border: none;
     font-family: 'Geist Mono', monospace;
     font-weight: 500;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--ink-soft);
-    padding: 10px 4px 12px;
-    margin-right: 18px;
+    padding: 10px 2px 12px;
+    margin-right: 14px;
     cursor: pointer;
     border-bottom: 2px solid transparent;
     white-space: nowrap;
@@ -219,83 +312,408 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
     color: #fff;
     flex-shrink: 0;
   }
 
   .lp-panel { display: none; }
-  .lp-panel.active { display: block; animation: lp-fade 0.25s ease; }
+  .lp-panel.active { display: block; animation: lp-fade 0.2s ease; }
   @keyframes lp-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* ---- Google SERP mock ---- */
-  .lp-google {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  .lp-stage {
+    border-radius: 14px;
+    padding: 20px;
+    max-width: 560px;
   }
-  .lp-g-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-  .lp-g-favicon {
-    width: 22px; height: 22px; border-radius: 50%;
-    background: var(--border); flex-shrink: 0;
+
+  .lp-placeholder-img {
+    width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #e8eaed, #dadce0);
+    color: #80868b;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+  }
+
+  /* ========== Google SERP ========== */
+  .lp-stage-google { background: #fff; border: 1px solid var(--border); }
+  .lp-google {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 600px;
+  }
+  .lp-g-cite {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  .lp-g-favicon {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: #f1f3f4;
+    border: 1px solid #ecedef;
+    flex-shrink: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lp-g-favicon img { width: 18px; height: 18px; object-fit: contain; }
+  .lp-g-cite-text { min-width: 0; }
+  .lp-g-site {
+    font-size: 14px;
+    color: #202124;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .lp-g-url {
+    font-size: 12px;
+    color: #4d5156;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .lp-g-title {
+    display: block;
+    font-size: 20px;
+    color: #1a0dab;
+    line-height: 1.3;
+    margin: 5px 0 4px;
+    text-decoration: none;
+    font-weight: 400;
+    cursor: default;
+  }
+  .lp-g-title:hover { text-decoration: underline; }
+  .lp-g-desc {
+    font-size: 14px;
+    color: #4d5156;
+    line-height: 1.58;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .lp-g-favicon img { width: 100%; height: 100%; object-fit: cover; }
-  .lp-g-site { font-size: 14px; color: #202124; font-weight: 400; }
-  .lp-g-url { font-size: 12px; color: #4d5156; margin-left: 32px; margin-top: -2px; margin-bottom: 6px; }
-  .lp-g-title { font-size: 20px; color: #1a0dab; line-height: 1.3; margin: 4px 0 6px; text-decoration: none; }
-  .lp-g-desc { font-size: 14px; color: #4d5156; line-height: 1.55; max-width: 560px; }
 
-  /* ---- Facebook mock ---- */
-  .lp-fb {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    background: var(--surface);
-    max-width: 500px;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  }
-  .lp-fb-img { width: 100%; aspect-ratio: 1.91/1; background: #f2f2f2; object-fit: cover; display: block; }
-  .lp-fb-body { padding: 10px 12px 14px; background: var(--surface); }
-  .lp-fb-domain { font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 3px; }
-  .lp-fb-title { font-size: 16px; font-weight: 600; color: var(--ink); line-height: 1.3; margin-bottom: 3px; }
-  .lp-fb-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.35; }
-
-  /* ---- X mock ---- */
+  /* ========== X / Twitter ========== */
+  .lp-stage-x { background: #fff; border: 1px solid var(--border); }
   .lp-x {
-    border: 1px solid var(--border);
+    max-width: 504px;
+    border: 1px solid #cfd9de;
     border-radius: 16px;
     overflow: hidden;
-    background: var(--surface);
-    max-width: 500px;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
-  .lp-x-img { width: 100%; aspect-ratio: 1.91/1; background: #f2f2f2; object-fit: cover; display: block; }
-  .lp-x-body { padding: 10px 12px 12px; border-top: 1px solid var(--border); }
-  .lp-x-domain { font-size: 13px; color: var(--ink-soft); margin-bottom: 2px; }
-  .lp-x-title { font-size: 15px; font-weight: 500; color: var(--ink); line-height: 1.3; margin-bottom: 2px; }
-  .lp-x-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.3; }
+  .lp-x.compact { display: flex; flex-direction: row-reverse; align-items: stretch; }
+  .lp-x.compact .lp-x-img {
+    width: 130px;
+    min-width: 130px;
+    aspect-ratio: 1;
+    border-left: 1px solid #cfd9de;
+  }
+  .lp-x.compact .lp-x-body { border-top: none; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .lp-x-img {
+    width: 100%;
+    aspect-ratio: 1.91 / 1;
+    background: #cfd9de;
+    overflow: hidden;
+  }
+  .lp-x-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lp-x-body { padding: 12px; border-top: 1px solid #cfd9de; }
+  .lp-x-domain {
+    font-size: 13px;
+    color: #536471;
+    line-height: 1.3;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .lp-x-domain svg { width: 12px; height: 12px; fill: #536471; flex-shrink: 0; }
+  .lp-x-title {
+    font-size: 15px;
+    font-weight: 400;
+    color: #0f1419;
+    line-height: 1.3;
+    margin-bottom: 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .lp-x-desc {
+    font-size: 15px;
+    color: #536471;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 
-  /* ---- LinkedIn mock ---- */
+  /* ========== Facebook ========== */
+  .lp-stage-fb { background: #f0f2f5; border: 1px solid var(--border); }
+  .lp-fb {
+    max-width: 500px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    font-family: Helvetica, Arial, sans-serif;
+  }
+  .lp-fb-img {
+    width: 100%;
+    aspect-ratio: 1.91 / 1;
+    background: #e4e6eb;
+    overflow: hidden;
+  }
+  .lp-fb-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lp-fb-body {
+    padding: 10px 12px 12px;
+    background: #f0f2f5;
+  }
+  .lp-fb-domain {
+    font-size: 12px;
+    color: #65676b;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.33;
+    margin-bottom: 2px;
+  }
+  .lp-fb-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #050505;
+    line-height: 1.25;
+    margin-bottom: 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .lp-fb-desc {
+    font-size: 14px;
+    color: #65676b;
+    line-height: 1.33;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ========== LinkedIn ========== */
+  .lp-stage-li { background: #f3f2ef; border: 1px solid var(--border); }
   .lp-li {
+    max-width: 552px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  }
+  .lp-li-img {
+    width: 100%;
+    aspect-ratio: 1.91 / 1;
+    background: #eef3f8;
+    overflow: hidden;
+  }
+  .lp-li-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lp-li-body { padding: 8px 12px 12px; }
+  .lp-li-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.9);
+    line-height: 1.4;
+    margin-bottom: 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .lp-li-domain {
+    font-size: 12px;
+    color: rgba(0,0,0,0.6);
+    line-height: 1.33;
+  }
+
+  /* ========== WhatsApp ========== */
+  .lp-stage-wa {
+    background:
+      linear-gradient(rgba(229,221,213,0.92), rgba(229,221,213,0.92)),
+      repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 20px);
     border: 1px solid var(--border);
+  }
+  .lp-wa {
+    max-width: 330px;
+    font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  .lp-wa-bubble {
+    background: #fff;
+    border-radius: 7.5px;
+    box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+    overflow: hidden;
+  }
+  .lp-wa-card {
+    background: #f5f6f6;
+    margin: 4px 4px 0;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .lp-wa-img {
+    width: 100%;
+    aspect-ratio: 1.91 / 1;
+    background: #dfe5e7;
+    overflow: hidden;
+  }
+  .lp-wa-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lp-wa-body { padding: 8px 10px 10px; }
+  .lp-wa-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111b21;
+    line-height: 1.3;
+    margin-bottom: 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .lp-wa-desc {
+    font-size: 12px;
+    color: #667781;
+    line-height: 1.35;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .lp-wa-domain {
+    font-size: 12px;
+    color: #667781;
+    text-transform: lowercase;
+    line-height: 1.3;
+  }
+  .lp-wa-url {
+    padding: 6px 10px 8px;
+    font-size: 14px;
+    color: #027eb5;
+    word-break: break-all;
+    line-height: 1.35;
+  }
+  .lp-wa-meta {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px 6px;
+    font-size: 11px;
+    color: #667781;
+  }
+
+  /* ========== Discord ========== */
+  .lp-stage-dc { background: #313338; border: 1px solid #1e1f22; }
+  .lp-dc {
+    max-width: 432px;
+    font-family: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  .lp-dc-msg {
+    display: flex;
+    gap: 16px;
+  }
+  .lp-dc-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: #5865f2;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .lp-dc-content { min-width: 0; flex: 1; }
+  .lp-dc-header {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .lp-dc-author {
+    font-size: 16px;
+    font-weight: 500;
+    color: #f2f3f5;
+  }
+  .lp-dc-time {
+    font-size: 12px;
+    color: #949ba4;
+  }
+  .lp-dc-link {
+    font-size: 16px;
+    color: #00a8fc;
+    margin-bottom: 8px;
+    word-break: break-all;
+    line-height: 1.375;
+  }
+  .lp-dc-embed {
+    display: grid;
+    grid-template-columns: 4px 1fr;
+    background: #2b2d31;
+    border-radius: 4px;
+    max-width: 432px;
+    overflow: hidden;
+  }
+  .lp-dc-bar { background: #1e1f22; min-height: 100%; }
+  .lp-dc-inner { padding: 8px 12px 12px 16px; min-width: 0; }
+  .lp-dc-provider {
+    font-size: 12px;
+    font-weight: 400;
+    color: #dbdee1;
+    margin-bottom: 4px;
+    line-height: 1.33;
+  }
+  .lp-dc-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #00a8fc;
+    line-height: 1.375;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .lp-dc-desc {
+    font-size: 14px;
+    color: #dbdee1;
+    line-height: 1.375;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: pre-wrap;
+  }
+  .lp-dc-desc:empty { display: none; margin: 0; }
+  .lp-dc-img {
+    width: 100%;
+    max-height: 300px;
     border-radius: 4px;
     overflow: hidden;
-    background: var(--surface);
-    max-width: 500px;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #1e1f22;
+    aspect-ratio: 1.91 / 1;
   }
-  .lp-li-img { width: 100%; aspect-ratio: 1.91/1; background: #f2f2f2; object-fit: cover; display: block; }
-  .lp-li-body { padding: 10px 14px 12px; background: var(--surface); }
-  .lp-li-title { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.3; margin-bottom: 4px; }
-  .lp-li-domain { font-size: 12px; color: var(--ink-soft); }
+  .lp-dc-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lp-dc-img:empty { display: none; }
 
-  /* ---- Tags panel ---- */
-  .lp-tags { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  /* ========== Tags ========== */
+  .lp-tags { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; max-width: 560px; }
   .lp-tag-row {
     display: grid;
     grid-template-columns: 148px 1fr;
@@ -310,115 +728,218 @@
   .lp-tag-val.missing { color: var(--amber); display: flex; align-items: center; gap: 6px; }
   .lp-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
 
-  .lp-placeholder-img {
-    width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, #eef0f4, #e3e6ec);
-    color: var(--ink-faint);
-    font-family: 'Geist Mono', monospace;
-    font-size: 11px;
-  }
-
   .lp-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 60px 20px;
+    min-height: 360px;
+    padding: 40px 24px;
     color: var(--ink-faint);
     font-size: 13px;
+    border: 1px dashed var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    gap: 10px;
   }
+  .lp-empty.loading { color: var(--ink-soft); border-style: solid; }
+  .lp-empty-title { font-size: 14px; font-weight: 600; color: var(--ink-soft); }
 
   @media (prefers-reduced-motion: reduce) {
     .lp-panel.active { animation: none; }
     .lp-spin { animation: none; }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 900px) {
+    .lp-layout { grid-template-columns: 1fr; gap: 28px; }
+    .lp-left {
+      position: static;
+      min-height: 0;
+    }
+    .lp-about-trigger { margin-top: 28px; }
     .lp-h1 { font-size: 26px; }
+    .lp-right { min-height: 0; }
+    .lp-sheet-panel { max-height: min(50vh, 380px); padding: 10px 18px 24px; }
+  }
+  @media (max-width: 480px) {
+    .lp-root { padding: 28px 16px 48px; }
     .lp-form { flex-direction: column; }
     .lp-form button { padding: 12px; }
     .lp-tag-row { grid-template-columns: 1fr; gap: 4px; }
+    .lp-stage { padding: 12px; }
   }
 </style>
 
 <body>
   <div class="lp-root">
     <div class="lp-wrap">
-      <div class="lp-eyebrow">link inspector</div>
-      <h1 class="lp-h1">Check your <span>link preview</span> everywhere it’s shared.</h1>
-      <p class="lp-sub">Use this free link preview tool to inspect Google results, Open Graph tags, Twitter cards, and social media preview data for any URL.</p>
+      <div class="lp-layout">
+        <aside class="lp-left">
+          <div class="lp-eyebrow">link inspector</div>
+          <h1 class="lp-h1">Check your <span>link preview</span> everywhere it’s shared.</h1>
+          <p class="lp-sub">Paste a URL to see how it looks on Google, X, Facebook, LinkedIn, WhatsApp, and Discord.</p>
 
-      <section class="lp-info" aria-labelledby="seo-heading">
-        <h2 id="seo-heading">Free link preview tool for SEO, social cards, and meta tags</h2>
-        <p>Whether you are launching a new page, checking a blog post, or validating a product link, this link preview inspector helps you verify how your URL will appear when it is shared online.</p>
-        <p>It works as a simple social preview checker, Open Graph checker, Twitter card checker, and meta tag inspector in one place.</p>
-      </section>
+          <form class="lp-form" id="lpForm">
+            <input type="text" id="lpInput" class="lp-mono" placeholder="https://stripe.com" autocomplete="off" spellcheck="false" />
+            <button type="submit" id="lpBtn">Inspect</button>
+          </form>
 
-      <form class="lp-form" id="lpForm">
-      <input type="text" id="lpInput" class="lp-mono" placeholder="https://stripe.com" autocomplete="off" />
-      <button type="submit" id="lpBtn">Inspect</button>
-    </form>
-    <div class="lp-status" id="lpStatus"></div>
+          <div class="lp-status" id="lpStatus"></div>
 
-    <div class="lp-results" id="lpResults">
-      <div class="lp-tabs" id="lpTabs">
-        <button class="lp-tab active" data-tab="google"><span class="lp-tab-badge" style="background:#4285F4;">G</span>Google</button>
-        <button class="lp-tab" data-tab="x"><span class="lp-tab-badge" style="background:#0F1419;">𝕏</span>X</button>
-        <button class="lp-tab" data-tab="fb"><span class="lp-tab-badge" style="background:#1877F2;">f</span>Facebook</button>
-        <button class="lp-tab" data-tab="li"><span class="lp-tab-badge" style="background:#0A66C2;">in</span>LinkedIn</button>
-        <button class="lp-tab" data-tab="tags"><span class="lp-tab-badge" style="background:#5B5F6B;">#</span>Tags</button>
-      </div>
+          <button type="button" class="lp-about-trigger" id="lpAboutOpen">About this tool</button>
+        </aside>
 
-      <div class="lp-panel active" id="panel-google">
-        <div class="lp-google">
-          <div class="lp-g-row">
-            <div class="lp-g-favicon" id="gFavicon"></div>
-            <div>
-              <div class="lp-g-site" id="gSite"></div>
+        <main class="lp-right">
+          <div class="lp-empty" id="lpEmpty">
+            <div class="lp-empty-title">No preview yet</div>
+            <div>Paste a URL on the left and hit Inspect.</div>
+          </div>
+
+          <div class="lp-results" id="lpResults">
+            <div class="lp-tabs" id="lpTabs">
+              <button type="button" class="lp-tab active" data-tab="google"><span class="lp-tab-badge" style="background:#4285F4;">G</span>Google</button>
+              <button type="button" class="lp-tab" data-tab="x"><span class="lp-tab-badge" style="background:#0F1419;">𝕏</span>X</button>
+              <button type="button" class="lp-tab" data-tab="fb"><span class="lp-tab-badge" style="background:#1877F2;">f</span>Facebook</button>
+              <button type="button" class="lp-tab" data-tab="li"><span class="lp-tab-badge" style="background:#0A66C2;">in</span>LinkedIn</button>
+              <button type="button" class="lp-tab" data-tab="wa"><span class="lp-tab-badge" style="background:#25D366;">W</span>WhatsApp</button>
+              <button type="button" class="lp-tab" data-tab="dc"><span class="lp-tab-badge" style="background:#5865F2;">D</span>Discord</button>
+              <button type="button" class="lp-tab" data-tab="tags"><span class="lp-tab-badge" style="background:#5B5F6B;">#</span>Tags</button>
+            </div>
+
+            <!-- Google -->
+            <div class="lp-panel active" id="panel-google">
+              <div class="lp-stage lp-stage-google">
+                <div class="lp-google">
+                  <div class="lp-g-cite">
+                    <div class="lp-g-favicon" id="gFavicon"></div>
+                    <div class="lp-g-cite-text">
+                      <div class="lp-g-site" id="gSite"></div>
+                      <div class="lp-g-url" id="gUrl"></div>
+                    </div>
+                  </div>
+                  <a class="lp-g-title" id="gTitle" href="#" onclick="return false;"></a>
+                  <div class="lp-g-desc" id="gDesc"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- X -->
+            <div class="lp-panel" id="panel-x">
+              <div class="lp-stage lp-stage-x">
+                <div class="lp-x" id="xCard">
+                  <div id="xImgWrap" class="lp-x-img"></div>
+                  <div class="lp-x-body">
+                    <div class="lp-x-domain" id="xDomain"></div>
+                    <div class="lp-x-title" id="xTitle"></div>
+                    <div class="lp-x-desc" id="xDesc"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Facebook -->
+            <div class="lp-panel" id="panel-fb">
+              <div class="lp-stage lp-stage-fb">
+                <div class="lp-fb">
+                  <div id="fbImgWrap" class="lp-fb-img"></div>
+                  <div class="lp-fb-body">
+                    <div class="lp-fb-domain" id="fbDomain"></div>
+                    <div class="lp-fb-title" id="fbTitle"></div>
+                    <div class="lp-fb-desc" id="fbDesc"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- LinkedIn -->
+            <div class="lp-panel" id="panel-li">
+              <div class="lp-stage lp-stage-li">
+                <div class="lp-li">
+                  <div id="liImgWrap" class="lp-li-img"></div>
+                  <div class="lp-li-body">
+                    <div class="lp-li-title" id="liTitle"></div>
+                    <div class="lp-li-domain" id="liDomain"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- WhatsApp -->
+            <div class="lp-panel" id="panel-wa">
+              <div class="lp-stage lp-stage-wa">
+                <div class="lp-wa">
+                  <div class="lp-wa-bubble">
+                    <div class="lp-wa-card">
+                      <div id="waImgWrap" class="lp-wa-img"></div>
+                      <div class="lp-wa-body">
+                        <div class="lp-wa-title" id="waTitle"></div>
+                        <div class="lp-wa-desc" id="waDesc"></div>
+                        <div class="lp-wa-domain" id="waDomain"></div>
+                      </div>
+                    </div>
+                    <div class="lp-wa-url" id="waUrl"></div>
+                    <div class="lp-wa-meta">
+                      <span id="waTime">12:00</span>
+                      <svg width="16" height="11" viewBox="0 0 16 11" fill="none" aria-hidden="true">
+                        <path d="M11.07 1.14 5.4 7.07 2.93 4.5 1.8 5.67l3.6 3.76 6.8-7.1-1.13-1.19Z" fill="#53bdeb"/>
+                        <path d="M14.2 1.14 8.53 7.07l-.8-.83 1.13-1.19 4.2-4.4 1.14 1.19Z" fill="#53bdeb"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Discord -->
+            <div class="lp-panel" id="panel-dc">
+              <div class="lp-stage lp-stage-dc">
+                <div class="lp-dc">
+                  <div class="lp-dc-msg">
+                    <div class="lp-dc-avatar" aria-hidden="true">U</div>
+                    <div class="lp-dc-content">
+                      <div class="lp-dc-header">
+                        <span class="lp-dc-author">username</span>
+                        <span class="lp-dc-time" id="dcTime">Today at 12:00 PM</span>
+                      </div>
+                      <div class="lp-dc-link" id="dcLink"></div>
+                      <div class="lp-dc-embed">
+                        <div class="lp-dc-bar" id="dcBar"></div>
+                        <div class="lp-dc-inner">
+                          <div class="lp-dc-provider" id="dcProvider"></div>
+                          <div class="lp-dc-title" id="dcTitle"></div>
+                          <div class="lp-dc-desc" id="dcDesc"></div>
+                          <div id="dcImgWrap" class="lp-dc-img"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="lp-panel" id="panel-tags">
+              <div class="lp-tags" id="tagsList"></div>
             </div>
           </div>
-          <div class="lp-g-url" id="gUrl"></div>
-          <a class="lp-g-title" id="gTitle" href="#" onclick="return false;"></a>
-          <div class="lp-g-desc" id="gDesc"></div>
-        </div>
-      </div>
-
-      <div class="lp-panel" id="panel-x">
-        <div class="lp-x">
-          <div id="xImgWrap" class="lp-x-img"></div>
-          <div class="lp-x-body">
-            <div class="lp-x-domain" id="xDomain"></div>
-            <div class="lp-x-title" id="xTitle"></div>
-            <div class="lp-x-desc" id="xDesc"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="lp-panel" id="panel-fb">
-        <div class="lp-fb">
-          <div id="fbImgWrap" class="lp-fb-img"></div>
-          <div class="lp-fb-body">
-            <div class="lp-fb-domain" id="fbDomain"></div>
-            <div class="lp-fb-title" id="fbTitle"></div>
-            <div class="lp-fb-desc" id="fbDesc"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="lp-panel" id="panel-li">
-        <div class="lp-li">
-          <div id="liImgWrap" class="lp-li-img"></div>
-          <div class="lp-li-body">
-            <div class="lp-li-title" id="liTitle"></div>
-            <div class="lp-li-domain" id="liDomain"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="lp-panel" id="panel-tags">
-        <div class="lp-tags" id="tagsList"></div>
+        </main>
       </div>
     </div>
+  </div>
 
-      <div class="lp-empty" id="lpEmpty">Nothing inspected yet — try a URL above.</div>
+  <div class="lp-sheet" id="lpAboutSheet" aria-hidden="true">
+    <div class="lp-sheet-backdrop" id="lpAboutBackdrop"></div>
+    <div class="lp-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="seo-heading">
+      <div class="lp-sheet-handle" aria-hidden="true"></div>
+      <div class="lp-sheet-head">
+        <h2 id="seo-heading">About this tool</h2>
+        <button type="button" class="lp-sheet-close" id="lpAboutClose" aria-label="Close">×</button>
+      </div>
+      <div class="lp-sheet-body">
+        <p>Free link preview tool for SEO, social cards, and meta tags. Whether you are launching a new page, checking a blog post, or validating a product link, this inspector shows how your URL will appear when it is shared online.</p>
+        <p>It works as a social preview checker for Google, X, Facebook, LinkedIn, WhatsApp, and Discord — plus a full meta tag inspector.</p>
+      </div>
     </div>
   </div>
 
@@ -431,6 +952,36 @@
   const results = document.getElementById('lpResults');
   const empty = document.getElementById('lpEmpty');
   const tabs = document.getElementById('lpTabs');
+  const aboutSheet = document.getElementById('lpAboutSheet');
+  const aboutOpen = document.getElementById('lpAboutOpen');
+  const aboutClose = document.getElementById('lpAboutClose');
+  const aboutBackdrop = document.getElementById('lpAboutBackdrop');
+
+  let activeRequest = 0;
+
+  function openAbout() {
+    aboutSheet.classList.add('open');
+    aboutSheet.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('lp-sheet-open');
+    aboutClose.focus();
+  }
+
+  function closeAbout() {
+    aboutSheet.classList.remove('open');
+    aboutSheet.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('lp-sheet-open');
+    aboutOpen.focus();
+  }
+
+  aboutOpen.addEventListener('click', openAbout);
+  aboutClose.addEventListener('click', closeAbout);
+  aboutBackdrop.addEventListener('click', closeAbout);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && aboutSheet.classList.contains('open')) closeAbout();
+  });
+
+  const GLOBE_SVG =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><g><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></g></svg>';
 
   tabs.addEventListener('click', (e) => {
     const t = e.target.closest('.lp-tab');
@@ -444,6 +995,15 @@
   function setStatus(text, isError) {
     status.textContent = text || '';
     status.classList.toggle('err', !!isError);
+  }
+
+  function setLoading(on) {
+    if (on) {
+      empty.style.display = 'flex';
+      empty.classList.add('loading');
+      empty.innerHTML = '<span class="lp-spin"></span><div class="lp-empty-title">Fetching preview…</div><div>Usually under a second.</div>';
+      results.classList.remove('show');
+    }
   }
 
   function normalizeUrl(raw) {
@@ -466,50 +1026,118 @@
     return null;
   }
 
-  function fetchWithTimeout(url, ms) {
+  function fetchWithTimeout(url, ms, options = {}) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), ms);
-    return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer));
+    return fetch(url, { ...options, signal: controller.signal })
+      .finally(() => clearTimeout(timer));
   }
 
-  async function fetchWithProxies(targetUrl) {
+  const metaCache = new Map();
+  const CACHE_TTL_MS = 10 * 60 * 1000;
+
+  function cacheGet(url) {
+    const hit = metaCache.get(url);
+    if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.data;
+    return null;
+  }
+
+  function cacheSet(url, data) {
+    metaCache.set(url, { data, at: Date.now() });
+    if (metaCache.size > 40) metaCache.delete(metaCache.keys().next().value);
+  }
+
+  function metaFromHtml(html, pageUrl) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return {
+      ok: true,
+      url: pageUrl,
+      title: doc.querySelector('title')?.textContent?.trim() || null,
+      description: getMeta(doc, ['description']),
+      favicon: doc.querySelector('link[rel~="icon"]')?.getAttribute('href') || null,
+      themeColor: getMeta(doc, ['theme-color', 'msapplication-TileColor']),
+      og: {
+        title: getMeta(doc, ['og:title']),
+        description: getMeta(doc, ['og:description']),
+        image: getMeta(doc, ['og:image', 'og:image:url']),
+        site_name: getMeta(doc, ['og:site_name']),
+        type: getMeta(doc, ['og:type']),
+      },
+      twitter: {
+        card: getMeta(doc, ['twitter:card']),
+        title: getMeta(doc, ['twitter:title']),
+        description: getMeta(doc, ['twitter:description']),
+        image: getMeta(doc, ['twitter:image']),
+      },
+    };
+  }
+
+  async function fetchLocalMeta(targetUrl) {
+    const res = await fetchWithTimeout(
+      `/api/proxy?url=${encodeURIComponent(targetUrl)}`,
+      6500,
+      { headers: { Accept: 'application/json' } }
+    );
+    if (!res.ok) throw new Error('local ' + res.status);
+    const data = await res.json();
+    if (!data || data.error || data.ok === false) throw new Error(data?.error || 'bad payload');
+    return data;
+  }
+
+  async function fetchHtmlFallback(targetUrl) {
     const proxies = [
-      (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-      (u) => `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(u)}`,
-      (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+      `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(targetUrl)}`,
+      `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`,
     ];
-    let lastErr;
-    for (const makeUrl of proxies) {
-      try {
-        const res = await fetchWithTimeout(makeUrl(targetUrl), 12000);
-        if (!res.ok) throw new Error('bad status ' + res.status);
-        const text = await res.text();
-        if (!text || text.length < 40) throw new Error('empty response');
-        return text;
-      } catch (e) {
-        console.error('proxy failed:', makeUrl('...'), e);
-        lastErr = e;
+    return Promise.any(proxies.map(async (url) => {
+      const res = await fetchWithTimeout(url, 7000);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+      if (!text || text.length < 40) throw new Error('empty');
+      const head = text.slice(0, 2500).toLowerCase();
+      if (!(head.includes('<html') || head.includes('<head') || head.includes('<meta') || head.includes('<title'))) {
+        throw new Error('not html');
       }
-    }
-    throw lastErr || new Error('all proxies failed');
+      return metaFromHtml(text, targetUrl);
+    }));
   }
 
-  function fill(id, text) { document.getElementById(id).textContent = text; }
+  async function fetchMeta(targetUrl) {
+    const cached = cacheGet(targetUrl);
+    if (cached) return { data: cached, cached: true };
 
-  function fillImage(wrapId, url, fallbackLetter) {
+    const data = await Promise.any([
+      fetchLocalMeta(targetUrl),
+      new Promise((resolve, reject) => {
+        setTimeout(() => fetchHtmlFallback(targetUrl).then(resolve, reject), 250);
+      }),
+    ]);
+    cacheSet(targetUrl, data);
+    return { data, cached: false };
+  }
+
+  function fill(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text || '';
+  }
+
+  function fillImage(wrapId, url, emptyLabel) {
     const wrap = document.getElementById(wrapId);
+    if (!wrap) return;
     wrap.innerHTML = '';
     if (url) {
       const img = document.createElement('img');
       img.src = url;
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.objectFit = 'cover';
-      img.style.display = 'block';
-      img.onerror = () => { wrap.innerHTML = `<div class="lp-placeholder-img">no og:image found</div>`; };
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = '';
+      img.onerror = () => {
+        wrap.innerHTML = `<div class="lp-placeholder-img">${emptyLabel || 'no image'}</div>`;
+      };
       wrap.appendChild(img);
     } else {
-      wrap.innerHTML = `<div class="lp-placeholder-img">no og:image found</div>`;
+      wrap.innerHTML = `<div class="lp-placeholder-img">${emptyLabel || 'no image'}</div>`;
     }
   }
 
@@ -518,9 +1146,32 @@
     return str.length > n ? str.slice(0, n - 1).trim() + '…' : str;
   }
 
+  function googleBreadcrumb(parsed) {
+    const parts = [parsed.hostname.replace(/^www\./, '')];
+    const segs = parsed.pathname.split('/').filter(Boolean).slice(0, 3);
+    if (segs.length) parts.push(...segs.map(s => decodeURIComponent(s)));
+    return parts.join(' › ');
+  }
+
+  function formatClock() {
+    const d = new Date();
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function formatDiscordTime() {
+    return 'Today at ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
+
+  function isValidColor(c) {
+    if (!c) return false;
+    return /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(c.trim()) ||
+      /^rgb(a)?\(/i.test(c.trim());
+  }
+
   function renderTags(rows) {
     const list = document.getElementById('tagsList');
     list.innerHTML = '';
+    const frag = document.createDocumentFragment();
     rows.forEach(([key, val]) => {
       const row = document.createElement('div');
       row.className = 'lp-tag-row';
@@ -533,12 +1184,115 @@
         v.textContent = val;
       } else {
         v.className = 'lp-tag-val missing';
-        v.innerHTML = `<span class="lp-tag-dot"></span>not set`;
+        v.innerHTML = '<span class="lp-tag-dot"></span>not set';
       }
       row.appendChild(k);
       row.appendChild(v);
-      list.appendChild(row);
+      frag.appendChild(row);
     });
+    list.appendChild(frag);
+  }
+
+  function render(meta, parsed) {
+    const twCard = (meta.twitter?.card || '').toLowerCase();
+    const ogTitle = meta.og?.title || null;
+    const twTitle = meta.twitter?.title || null;
+    const ogDesc = meta.og?.description || null;
+    const twDesc = meta.twitter?.description || null;
+    const pageTitle = meta.title || null;
+    const pageDesc = meta.description || null;
+
+    // Platform-specific title/description priority
+    const gTitle = pageTitle || ogTitle || parsed.hostname;
+    const gDesc = pageDesc || ogDesc || 'No meta description found for this page.';
+
+    const xTitle = twTitle || ogTitle || pageTitle || parsed.hostname;
+    const xDesc = twDesc || ogDesc || pageDesc || '';
+    const xImage = absolutize(meta.twitter?.image || meta.og?.image, parsed.href);
+
+    const socialTitle = ogTitle || twTitle || pageTitle || parsed.hostname;
+    const socialDesc = ogDesc || twDesc || pageDesc || '';
+    const socialImage = absolutize(meta.og?.image || meta.twitter?.image, parsed.href);
+
+    const siteName = meta.og?.site_name || parsed.hostname.replace(/^www\./, '');
+    const hostClean = parsed.hostname.replace(/^www\./, '');
+    const faviconHref = absolutize(meta.favicon, parsed.href) ||
+      `https://www.google.com/s2/favicons?sz=64&domain=${parsed.hostname}`;
+
+    // ---- Google ----
+    fill('gSite', siteName);
+    fill('gUrl', googleBreadcrumb(parsed));
+    fill('gTitle', truncate(gTitle, 60));
+    fill('gDesc', truncate(gDesc, 158));
+    document.getElementById('gFavicon').innerHTML =
+      `<img src="${faviconHref}" alt="" width="18" height="18" onerror="this.style.display='none'" />`;
+
+    // ---- X (summary vs summary_large_image) ----
+    const xCard = document.getElementById('xCard');
+    // Large card when image exists unless twitter:card is explicitly "summary"
+    const useLarge = !!xImage && twCard !== 'summary';
+    xCard.classList.toggle('compact', !!xImage && !useLarge);
+    if (!xImage) {
+      xCard.classList.remove('compact');
+      document.getElementById('xImgWrap').style.display = 'none';
+    } else {
+      document.getElementById('xImgWrap').style.display = '';
+      fillImage('xImgWrap', xImage, 'no image');
+    }
+    document.getElementById('xDomain').innerHTML = GLOBE_SVG + ' ' + hostClean;
+    fill('xTitle', truncate(xTitle, 70));
+    fill('xDesc', truncate(xDesc, 200));
+
+    // ---- Facebook ----
+    fillImage('fbImgWrap', socialImage, 'no image');
+    fill('fbDomain', hostClean);
+    fill('fbTitle', truncate(socialTitle, 100));
+    fill('fbDesc', truncate(socialDesc, 200));
+
+    // ---- LinkedIn ----
+    fillImage('liImgWrap', socialImage, 'no image');
+    fill('liTitle', truncate(socialTitle, 150));
+    fill('liDomain', hostClean);
+
+    // ---- WhatsApp ----
+    fillImage('waImgWrap', socialImage, 'no image');
+    fill('waTitle', truncate(socialTitle, 100));
+    fill('waDesc', truncate(socialDesc, 140));
+    fill('waDomain', hostClean);
+    fill('waUrl', parsed.href);
+    fill('waTime', formatClock());
+
+    // ---- Discord ----
+    fill('dcLink', parsed.href);
+    fill('dcProvider', siteName);
+    fill('dcTitle', truncate(socialTitle, 256));
+    fill('dcDesc', truncate(socialDesc, 350));
+    fill('dcTime', formatDiscordTime());
+    const bar = document.getElementById('dcBar');
+    bar.style.background = isValidColor(meta.themeColor) ? meta.themeColor.trim() : '#1e1f22';
+    if (socialImage) {
+      document.getElementById('dcImgWrap').style.display = '';
+      fillImage('dcImgWrap', socialImage, 'no image');
+    } else {
+      document.getElementById('dcImgWrap').style.display = 'none';
+      document.getElementById('dcImgWrap').innerHTML = '';
+    }
+
+    // ---- Tags ----
+    renderTags([
+      ['title', meta.title],
+      ['meta description', meta.description],
+      ['theme-color', meta.themeColor],
+      ['og:title', meta.og?.title],
+      ['og:description', meta.og?.description],
+      ['og:image', meta.og?.image],
+      ['og:site_name', meta.og?.site_name],
+      ['og:type', meta.og?.type],
+      ['twitter:card', meta.twitter?.card],
+      ['twitter:title', meta.twitter?.title],
+      ['twitter:description', meta.twitter?.description],
+      ['twitter:image', meta.twitter?.image],
+    ]);
   }
 
   async function inspect(rawUrl) {
@@ -548,88 +1302,41 @@
       return;
     }
 
+    const reqId = ++activeRequest;
+    const started = performance.now();
     btn.disabled = true;
-    results.classList.remove('show');
-    empty.style.display = 'none';
-    setStatus('Fetching page…');
-    status.innerHTML = '<span class="lp-spin"></span> Fetching page…';
+    setLoading(true);
+    setStatus('');
+    status.innerHTML = '<span class="lp-spin"></span> Fetching…';
 
     try {
-      const html = await fetchWithProxies(parsed.href);
-      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const { data, cached } = await fetchMeta(parsed.href);
+      if (reqId !== activeRequest) return;
 
-      const ogTitle = getMeta(doc, ['og:title']);
-      const rawTitle = doc.querySelector('title')?.textContent?.trim() || null;
-      const title = ogTitle || rawTitle || parsed.hostname;
+      render(data, parsed);
 
-      const description = getMeta(doc, ['og:description', 'description']);
-      const ogImageRaw = getMeta(doc, ['og:image', 'og:image:url', 'twitter:image']);
-      const image = absolutize(ogImageRaw, parsed.href);
-      const siteName = getMeta(doc, ['og:site_name']) || parsed.hostname.replace(/^www\./, '');
-
-      let faviconHref = doc.querySelector('link[rel~="icon"]')?.getAttribute('href');
-      faviconHref = absolutize(faviconHref, parsed.href) ||
-        `https://www.google.com/s2/favicons?sz=64&domain=${parsed.hostname}`;
-
-      // Google panel
-      fill('gSite', siteName);
-      fill('gUrl', parsed.hostname + (parsed.pathname !== '/' ? parsed.pathname : ''));
-      fill('gTitle', truncate(title, 65));
-      fill('gDesc', truncate(description || 'No meta description found for this page.', 160));
-      document.getElementById('gFavicon').innerHTML = `<img src="${faviconHref}" onerror="this.style.display='none'" />`;
-
-      // X panel
-      fillImage('xImgWrap', image);
-      fill('xDomain', parsed.hostname.replace(/^www\./, ''));
-      fill('xTitle', truncate(title, 70));
-      fill('xDesc', truncate(description || '', 125));
-
-      // Facebook panel
-      fillImage('fbImgWrap', image);
-      fill('fbDomain', parsed.hostname.replace(/^www\./, ''));
-      fill('fbTitle', truncate(title, 80));
-      fill('fbDesc', truncate(description || '', 140));
-
-      // LinkedIn panel
-      fillImage('liImgWrap', image);
-      fill('liTitle', truncate(title, 90));
-      fill('liDomain', parsed.hostname.replace(/^www\./, ''));
-
-      // Tags panel
-      renderTags([
-        ['title', rawTitle],
-        ['meta description', getMeta(doc, ['description'])],
-        ['og:title', ogTitle],
-        ['og:description', getMeta(doc, ['og:description'])],
-        ['og:image', ogImageRaw],
-        ['og:site_name', getMeta(doc, ['og:site_name'])],
-        ['og:type', getMeta(doc, ['og:type'])],
-        ['twitter:card', getMeta(doc, ['twitter:card'])],
-        ['twitter:title', getMeta(doc, ['twitter:title'])],
-        ['twitter:description', getMeta(doc, ['twitter:description'])],
-        ['twitter:image', getMeta(doc, ['twitter:image'])],
-      ]);
-
+      empty.style.display = 'none';
+      empty.classList.remove('loading');
       results.classList.add('show');
-      setStatus(`Fetched ${parsed.hostname} successfully.`);
+
+      const ms = Math.round(performance.now() - started);
+      setStatus(cached ? `Cached · ${parsed.hostname}` : `Ready in ${ms}ms · ${parsed.hostname}`);
     } catch (err) {
-      empty.style.display = 'block';
-      empty.textContent = 'Couldn\'t fetch that page — it may block external requests, or be unreachable.';
+      if (reqId !== activeRequest) return;
+      empty.style.display = 'flex';
+      empty.classList.remove('loading');
+      empty.innerHTML =
+        '<div class="lp-empty-title">Couldn\'t fetch that page</div><div>It may block requests or be unreachable. Try another URL.</div>';
+      results.classList.remove('show');
       setStatus('Fetch failed. Try a different URL.', true);
     } finally {
-      btn.disabled = false;
+      if (reqId === activeRequest) btn.disabled = false;
     }
   }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    try {
-      inspect(input.value);
-    } catch (err) {
-      console.error(err);
-      btn.disabled = false;
-      setStatus('Something went wrong: ' + err.message, true);
-    }
+    inspect(input.value);
   });
 })();
   </script>

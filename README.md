@@ -30,11 +30,13 @@ This starts a static server at `http://localhost:3000` (uses `npx serve`, no ins
 ## How it works
 
 - Paste a URL and click **Inspect**.
-- The page is fetched through a public CORS proxy (since browsers can't read
-  cross-origin HTML directly), in this order, falling back if one fails:
+- On production (Vercel), the page is fetched through the same-origin
+  serverless proxy at `/api/proxy` — fast and reliable.
+- If the local proxy is unavailable (e.g. opening `index.html` directly),
+  public CORS proxies are used as fallbacks:
   1. `api.allorigins.win`
   2. `api.codetabs.com`
-  3. `corsproxy.io` (currently limited to localhost origins on its free tier)
+  3. `corsproxy.io`
 - Meta tags (`og:title`, `og:description`, `og:image`, Twitter Card tags, etc.)
   are parsed out and rendered into platform-accurate preview cards.
 
@@ -50,8 +52,7 @@ Everything lives in `index.html`:
 
 ## Known limitations
 
-- Sites that block proxy/datacenter traffic, or return non-HTML responses,
-  won't resolve — you'll see a clear error rather than a silent failure.
-- Public CORS proxies are rate-limited. For heavier use, swap in your own
-  proxy (e.g. a small Cloudflare Worker) by editing the `proxies` array in
-  `fetchWithProxies`.
+- Sites that block datacenter traffic, or return non-HTML responses, won't
+  resolve — you'll see a clear error rather than a silent failure.
+- Deploy on Vercel (or any host that runs `/api/proxy.js`) for reliable
+  production fetches. Pure static hosts only get the public CORS fallbacks.
